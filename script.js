@@ -19,6 +19,7 @@ $(function()
 		buffInterval = null, tFlag = false;
 	
 	var playPreviousTrackButton = $('#play-previous'), playNextTrackButton = $('#play-next'), currIndex = -1;
+	var songs = [];
 	
 	function shuffle(a) {
 		var j, x, i;
@@ -30,7 +31,6 @@ $(function()
 		}
 		return a;
 	}
-	songs = shuffle(songs);
 
     function playPause()
     {
@@ -166,10 +166,11 @@ $(function()
         clearInterval(buffInterval);
         buffInterval = setInterval(function()
         { 
-            if( (nTime == 0) || (bTime - nTime) > 1000  )
+            if( (nTime == 0) || (bTime - nTime) > 1000  ){
                 albumArt.addClass('buffering');
-            else
+            } else {
                 albumArt.removeClass('buffering');
+			}
 
             bTime = new Date();
             bTime = bTime.getTime();
@@ -199,11 +200,11 @@ $(function()
             tProgress.text('00:00');
             tTime.text('00:00');
 			
-			currAlbum = songs[currIndex].name;
-            currTrackName = songs[currIndex].artist;
-            currArtwork = songs[currIndex].picture;
+			currAlbum = " ";
+            currTrackName = " ";
+            currArtwork = "https://raw.githubusercontent.com/himalayasingh/music-player-1/master/img/_1.jpg";
 
-            audio.src = songs[currIndex].url;
+            audio.src = songs[currIndex].webContentLink;
             
             nTime = 0;
             bTime = new Date();
@@ -253,6 +254,17 @@ $(function()
         playPreviousTrackButton.on('click',function(){ selectTrack(-1);} );
         playNextTrackButton.on('click',function(){ selectTrack(1);});
 	}
+	
+	$(document).ready(function(){
+		$.get("https://api-zbotvnz-github-io.herokuapp.com/public/files", function(data, status){
+			if (status === 'success') {
+				songs = data;
+				songs = shuffle(songs);
+				initPlayer();
+			} else {
+				location.reload();
+			}
+		});
+	});
     
-	initPlayer();
 });
