@@ -185,6 +185,20 @@ $(function () {
       currArtwork = 'https://raw.githubusercontent.com/himalayasingh/music-player-1/master/img/_1.jpg';
 
       audio.src = songs[currIndex].webContentLink;
+      if ('mediaSession' in navigator) {
+        navigator.mediaSession.metadata = new MediaMetadata({
+          title: name,
+          artist: singer,
+          artwork: [
+            { src: 'https://zbotvnz.github.io/Background/bg1.jpg', sizes: '96x96',   type: 'image/jpg' },
+            { src: 'https://zbotvnz.github.io/Background/bg1.jpg', sizes: '128x128', type: 'image/jpg' },
+            { src: 'https://zbotvnz.github.io/Background/bg1.jpg', sizes: '192x192', type: 'image/jpg' },
+            { src: 'https://zbotvnz.github.io/Background/bg1.jpg', sizes: '256x256', type: 'image/jpg' },
+            { src: 'https://zbotvnz.github.io/Background/bg1.jpg', sizes: '384x384', type: 'image/jpg' },
+            { src: 'https://zbotvnz.github.io/Background/bg1.jpg', sizes: '512x512', type: 'image/jpg' },
+          ]
+        });
+      }
 
       nTime = 0;
       bTime = new Date();
@@ -233,6 +247,24 @@ $(function () {
     playNextTrackButton.on('click', function () {
       selectTrack(1);
     });
+
+    navigator.mediaSession.setActionHandler('previoustrack', function () {
+      selectTrack(-1);
+    });
+
+    navigator.mediaSession.setActionHandler('nexttrack', function () {
+      selectTrack(1);
+    });
+
+    audio.onerror = function(error) {
+      console.log(audio.error.code);
+      if (audio.error.code === 2) {
+        var curTime = audio.currentTime;
+        audio.load();
+        audio.currentTime = curTime;
+        audio.play();
+      }
+    };
   }
 
   $(document).ready(function () {
