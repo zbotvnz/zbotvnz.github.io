@@ -1,0 +1,31 @@
+<html>
+    <header>
+        <title>Duplicate check songs</title>
+    </header>
+    <body>
+        <div id="list">
+
+        </div>
+    </body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $.get('https://api-zbotvnz-github-io.herokuapp.com/public/files', function (data, status) {
+                if (status === 'success') {
+                    for (var i =0; i<data.length; i++) {
+                        for(var j = i+1; j<data.length; j++) {
+                            if (data[i].name === data[j].name) {
+                                $('#list').append('<p>' + data[j].name + '</p>');
+                                console.log(data[j]);
+                            }
+                        }
+                    }
+                } else {
+                    location.reload();
+                }
+            }).fail(function () {
+                location.reload();
+            });
+        });
+    </script>
+</html>
