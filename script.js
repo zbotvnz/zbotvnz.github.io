@@ -53,6 +53,12 @@ $(function () {
         albumArt.addClass('active');
         checkBuffering();
         i.attr('class', 'fas fa-pause');
+
+        if (audio.error !== null && audio.error.code === 2) {
+          var curTime = audio.currentTime;
+          audio.load();
+          audio.currentTime = curTime;
+        }
         audio.play();
       } else {
         playerTrack.removeClass('active');
@@ -223,7 +229,7 @@ $(function () {
   }
 
   function initPlayer() {
-    audio = new Audio();
+    audio = $('audio')[0];
 
     selectTrack(0);
 
@@ -248,6 +254,16 @@ $(function () {
       selectTrack(1);
     });
 
+    navigator.mediaSession.setActionHandler('play', function () {
+      playPause();
+      navigator.mediaSession.playbackState = "playing";
+    });
+
+    navigator.mediaSession.setActionHandler('pause', function () {
+      playPause();
+      navigator.mediaSession.playbackState = "paused";
+    });
+
     navigator.mediaSession.setActionHandler('previoustrack', function () {
       selectTrack(-1);
     });
@@ -258,7 +274,8 @@ $(function () {
 
     audio.onerror = function(error) {
       console.log(audio.error.code);
-      if (audio.error.code === 2) {
+      if (audio.error !== null && audio.error.code === 2) {
+        audio.pause();
         var curTime = audio.currentTime;
         audio.load();
         audio.currentTime = curTime;

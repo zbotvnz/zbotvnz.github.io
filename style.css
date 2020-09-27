@@ -237,8 +237,11 @@ body {
 }
 
 #track-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   color: #acaebd;
-  font-size: 13px;
+  font-size: 12px;
   margin: 2px 0 13px 0;
 }
 
